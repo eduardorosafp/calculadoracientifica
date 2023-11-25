@@ -2,7 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
-  margin-left: 1.8em;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #ffffff;
@@ -89,17 +91,20 @@ function Calculator() {
     setScreenValue(screenValue + buttonText);
   };
 
+
+
+   const handleSquareRoot = () => {
+     try {
+       setScreenValue(Math.sqrt(eval(screenValue)).toString());
+     } catch (error) {
+       setScreenValue("Error");
+     }
+   };
+
   const handleMathFunction = (mathFunction) => {
     setScreenValue(mathFunction(parseFloat(screenValue)));
   };
 
-  const handleBackspace = () => {
-    setScreenValue(screenValue.slice(0, -1));
-  };
-
-  const handleClear = () => {
-    setScreenValue("");
-  };
 
   const evaluateExpression = () => {
     try {
@@ -107,6 +112,14 @@ function Calculator() {
     } catch (error) {
       setScreenValue("Error");
     }
+  };
+
+  const handleClear = () => {
+    setScreenValue("");
+  };
+
+  const handleBackspace = () => {
+    setScreenValue(screenValue.slice(0, -1));
   };
 
   return (
@@ -118,54 +131,75 @@ function Calculator() {
       <div className="btns">
         <Row>
           <CEButton onClick={handleBackspace}>CE</CEButton>
-          <Button onClick={() => handleMathFunction(Math.factorial)}>x!</Button>
-          <Button className="btn">(</Button>
-          <Button className="btn">)</Button>
-          <Button className="btn">%</Button>
+          <Button onClick={() => handleButtonClick("x!")}>x!</Button>
+          <Button className="btn" onClick={() => handleButtonClick("(")}>
+            (
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick(")")}>
+            )
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("%")}>
+            %
+          </Button>
           <ACButton onClick={handleClear}>AC</ACButton>
         </Row>
 
         <Row>
-          <Button onClick={() => handleButtonClick("sin(")}>sin</Button>
-          <Button onClick={() => handleMathFunction(() => 3.14159265359)}>
-            π
+          <Button onClick={() => handleMathFunction(Math.sin)}>sin</Button>
+          <Button onClick={() => handleMathFunction(Math.PI)}>π</Button>
+          <Button className="btn" onClick={() => handleButtonClick("7")}>
+            7
           </Button>
-          <Button className="btn">7</Button>
-          <Button className="btn">8</Button>
-          <Button className="btn">9</Button>
+          <Button className="btn" onClick={() => handleButtonClick("8")}>
+            8
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("9")}>
+            9
+          </Button>
           <Button className="btn" onClick={() => handleButtonClick("/")}>
             ÷
           </Button>
         </Row>
 
         <Row>
-          <Button onClick={() => handleButtonClick("cos(")}>cos</Button>
+          <Button onClick={() => handleMathFunction(Math.cos)}>cos</Button>
+
           <Button onClick={() => handleMathFunction(Math.log)}>log</Button>
-          <Button className="btn">4</Button>
-          <Button className="btn">5</Button>
-          <Button className="btn">6</Button>
+          <Button className="btn" onClick={() => handleButtonClick("4")}>
+            4
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("5")}>
+            5
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("6")}>
+            6
+          </Button>
           <Button className="btn" onClick={() => handleButtonClick("*")}>
             ×
           </Button>
         </Row>
 
         <Row>
-          <Button onClick={() => handleButtonClick("tan(")}>tan</Button>
-          <Button onClick={() => handleMathFunction(Math.sqrt)}>√</Button>
-          <Button className="btn">1</Button>
-          <Button className="btn">2</Button>
-          <Button className="btn">3</Button>
+          <Button onClick={() => handleMathFunction(Math.tan)}>tan</Button>
+          <Button onClick={handleSquareRoot}>√</Button>
+          <Button className="btn" onClick={() => handleButtonClick("1")}>
+            1
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("2")}>
+            2
+          </Button>
+          <Button className="btn" onClick={() => handleButtonClick("3")}>
+            3
+          </Button>
           <Button className="btn" onClick={() => handleButtonClick("-")}>
             -
           </Button>
         </Row>
 
         <Row>
-          <Button onClick={() => handleMathFunction(() => 2.71828182846)}>
-            e
-          </Button>
+          <Button onClick={() => handleMathFunction(Math.E)}>e</Button>
           <Button onClick={() => handleMathFunction(Math.pow)}>
-            x{" "}
+            x
             <span
               style={{ position: "relative", bottom: ".4em", right: ".1em" }}
             >
