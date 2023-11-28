@@ -1,10 +1,10 @@
-// Header.js
+
 import styled from "styled-components";
 
-// Estilos usando Styled Components
+
 const HeaderWrapper = styled.div`
-  background-color: #e0eaf5;
-  padding: 20px;
+  background-color: #a0c6f0;
+  padding: 40px;
   text-align: center;
 `;
 

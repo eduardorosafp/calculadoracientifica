@@ -1,5 +1,6 @@
-import { useState } from "react";
+import  { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const categories = ["Área", "Volume", "Trigonométricas", "Bhaskara"];
 
@@ -92,6 +93,18 @@ const FormulaContainer = styled.div`
   margin-top: 60px;
 `;
 
+const Button = styled.button`
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  margin-top: 20px;
+  margin-top: 50px;
+`;
+
+
 const FormulaSection = styled.div`
   margin-bottom: 20px;
 `;
@@ -149,7 +162,7 @@ const FormulaDropdown = styled.select`
   margin-bottom: 30px;
 `;
 
-const FormulaCalculator = () => {
+const FormulaCalculator = ({ onBackButtonClick }) => {
   const [category, setCategory] = useState("Área");
   const [formula, setFormula] = useState(Object.keys(formulas["Área"])[0]);
   const [inputValues, setInputValues] = useState({});
@@ -267,8 +280,13 @@ const FormulaCalculator = () => {
 
         {renderFormula()}
       </FormulaSection>
+      <Button onClick={onBackButtonClick}>Voltar para a Calculadora</Button>
     </FormulaContainer>
   );
+};
+
+FormulaCalculator.propTypes = {
+  onBackButtonClick: PropTypes.func.isRequired,
 };
 
 export default FormulaCalculator;
