@@ -38,7 +38,7 @@ const Button = styled.button`
 const CalculatorPage = () => {
   const handleButtonClick = () => {
     window.location.href =
-      "https://stellar-nougat-7f311e.netlify.app/calculadora";
+      "/calculadora";
   };
 
   return (
