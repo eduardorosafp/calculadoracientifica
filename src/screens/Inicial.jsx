@@ -37,19 +37,20 @@ const Button = styled.button`
 
 const CalculatorPage = () => {
   const handleButtonClick = () => {
-    window.location.href = "http://localhost:5173/calculadora";
+    window.location.href =
+      "https://stellar-nougat-7f311e.netlify.app/calculadora";
   };
 
   return (
     <>
-    <Header/>
-    <PageWrapper>
-      <CalculatorBox>
-        <h1>Calculadora Científica</h1>
-        <Button onClick={handleButtonClick}>Venha conhecer!</Button>
-      </CalculatorBox>
-    </PageWrapper>
-    </> 
+      <Header />
+      <PageWrapper>
+        <CalculatorBox>
+          <h1>Calculadora Científica</h1>
+          <Button onClick={handleButtonClick}>Venha conhecer!</Button>
+        </CalculatorBox>
+      </PageWrapper>
+    </>
   );
 };
 
