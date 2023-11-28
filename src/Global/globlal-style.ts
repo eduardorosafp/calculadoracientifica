@@ -18,6 +18,8 @@ export const GlobalStyle = createGlobalStyle`
     /* Exemplo: Altere o tamanho da fonte ou a largura do conteúdo */
     body {
       font-size: 14px;
+      width: 100%;
+      overflow-x: hidden;
     }
 
     /* Adicione mais estilos conforme necessário para telas menores */
