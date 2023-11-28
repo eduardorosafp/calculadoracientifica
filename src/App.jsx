@@ -1,225 +1,274 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-const Container = styled.div`
+const categories = ["Área", "Volume", "Trigonométricas", "Bhaskara"];
+
+const formulas = {
+  Área: {
+    "Área do Triângulo": ["Base", "Altura"],
+    "Área do Retângulo": ["Base", "Altura"],
+    "Área do Círculo": ["Raio"],
+    "Área do Trapézio": ["BaseMaior", "BaseMenor", "Altura"],
+    "Área do Paralelogramo": ["Base", "Altura"],
+  },
+  Volume: {
+    "Volume do Cubo": ["Lado"],
+    "Volume do Paralelepípedo": ["Comprimento", "Largura", "Altura"],
+    "Volume da Esfera": ["Raio"],
+    "Volume do Cone": ["Raio", "Altura"],
+    "Volume do Cilindro": ["Raio", "Altura"],
+  },
+  Trigonométricas: {
+    Seno: ["Ângulo"],
+    Cosseno: ["Ângulo"],
+    Tangente: ["Ângulo"],
+  },
+  Bhaskara: {
+    "Fórmula de Bhaskara (Fórmula Quadrática)": ["a", "b", "c"],
+  },
+};
+
+const formulasExpressions = {
+  Área: {
+    "Área do Triângulo": "(Base * Altura) / 2",
+    "Área do Retângulo": "Base * Altura",
+    "Área do Círculo": "π * Raio²",
+    "Área do Trapézio": "((BaseMaior + BaseMenor) * Altura) / 2",
+    "Área do Paralelogramo": "Base * Altura",
+  },
+  Volume: {
+    "Volume do Cubo": "Lado³",
+    "Volume do Paralelepípedo": "Comprimento * Largura * Altura",
+    "Volume da Esfera": "(4/3) * π * Raio³",
+    "Volume do Cone": "(1/3) * π * Raio² * Altura",
+    "Volume do Cilindro": "π * Raio² * Altura",
+  },
+  Trigonométricas: {
+    Seno: "sin(Ângulo)",
+    Cosseno: "cos(Ângulo)",
+    Tangente: "tan(Ângulo)",
+  },
+  Bhaskara: {
+    "Fórmula de Bhaskara (Fórmula Quadrática)": "(-b ± √(b²-4ac)) / (2a)",
+  },
+};
+
+const calculations = {
+  Área: {
+    "Área do Triângulo": "(inputValues['Base'] * inputValues['Altura']) / 2",
+    "Área do Retângulo": "inputValues['Base'] * inputValues['Altura']",
+    "Área do Círculo": "Math.PI * inputValues['Raio'] ** 2",
+    "Área do Trapézio":
+      "((inputValues['BaseMaior'] + inputValues['BaseMenor']) * inputValues['Altura']) / 2",
+    "Área do Paralelogramo": "inputValues['Base'] * inputValues['Altura']",
+  },
+  Volume: {
+    "Volume do Cubo": "inputValues['Lado'] ** 3",
+    "Volume do Paralelepípedo":
+      "inputValues['Comprimento'] * inputValues['Largura'] * inputValues['Altura']",
+    "Volume da Esfera": "(4/3) * Math.PI * inputValues['Raio'] ** 3",
+    "Volume do Cone":
+      "(1/3) * Math.PI * inputValues['Raio'] ** 2 * inputValues['Altura']",
+    "Volume do Cilindro":
+      "Math.PI * inputValues['Raio'] ** 2 * inputValues['Altura']",
+  },
+  Trigonométricas: {
+    Seno: "Math.sin(inputValues['Ângulo'])",
+    Cosseno: "Math.cos(inputValues['Ângulo'])",
+    Tangente: "Math.tan(inputValues['Ângulo'])",
+  },
+  Bhaskara: {
+    "Fórmula de Bhaskara (Fórmula Quadrática)": `(-inputValues['b'] + Math.sqrt(inputValues['b']**2 - 4 * inputValues['a'] * inputValues['c'])) / (2 * inputValues['a'])`,
+  },
+};
+
+const FormulaContainer = styled.div`
   max-width: 600px;
   width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 120px;
   border-radius: 8px;
-  box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #ffffff;
+  box-shadow: 13px 13px 20px grey, -13px -13px 20px grey;
+  margin-top: 60px;
 `;
 
-const Row = styled.div`
+const FormulaSection = styled.div`
+  margin-bottom: 20px;
+`;
+
+const FormulaRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
+  align-items: center;
   margin-bottom: 10px;
 `;
 
-const Button = styled.button`
-  width: 60px;
+const FormulaButton = styled.button`
+  width: 120px;
   height: 30px;
   font-size: 16px;
+  font-style: inherit;
   border: none;
   outline: none;
   margin: 5px;
   border-radius: 4px;
   transition: 0.1s;
-  box-shadow: 5px 5px 8px #00000020, -5px -5px 8px #ffff;
-
-  &:hover {
-    box-shadow: inset 5px 5px 8px rgba(16, 16, 16, 0.1),
-      inset -5px -5px 8px #fff;
-    background: #fff;
-  }
+  box-shadow: 5px 5px 8px #00000020, -5px -5px 8px #0000;
+  background-color: darkgrey;
 `;
 
-const Display = styled.input`
+const FormulaInput = styled.input`
   margin-bottom: 0.5em;
-  width: auto;
-  height: 70px;
-  font-size: 35px;
+  width: 120px;
+  height: 30px;
+  font-size: 14px;
+  font-style: inherit;
   outline: none;
   border: none;
-  text-align: right;
-  padding-right: 0.5em;
-  background: #ecf0f3;
+  padding: 0.5em;
+  border-radius: 6px;
+  box-shadow: inset 8px 8px 8px grey, inset -8px -8px 8px #ffffff;
+`;
+
+const FormulaLabel = styled.span`
+  margin-bottom: 0.5em;
+  font-size: 14px;
+  font-style: inherit;
+`;
+
+const FormulaDropdown = styled.select`
+  height: 30px;
+  font-size: 14px;
+  outline: none;
+  border: none;
+  padding: 0.5em;
   border-radius: 6px;
   box-shadow: inset 8px 8px 8px #cbced1, inset -8px -8px 8px #ffffff;
+  font-style: inherit;
+  margin-bottom: 30px;
 `;
 
-const EvalButton = styled(Button)`
-  background: #33ccff;
-  color: #fff;
-  box-shadow: inset 5px 5px 8px #66d9ff, inset -5px -5px 8px #00ace6;
+const FormulaCalculator = () => {
+  const [category, setCategory] = useState("Área");
+  const [formula, setFormula] = useState(Object.keys(formulas["Área"])[0]);
+  const [inputValues, setInputValues] = useState({});
+  const [result, setResult] = useState(null);
 
-  &:hover {
-    box-shadow: inset 5px 5px 8px #00ace6, inset -5px -5px 8px #00ace6;
-  }
-`;
-
-const ACButton = styled(Button)`
-  background: #33cc33;
-  color: #fff;
-
-  &:hover {
-    box-shadow: inset 5px 5px 8px #2eb82e, inset -5px -5px 8px #33cc33;
-  }
-`;
-
-const CEButton = styled(Button)`
-  background: #ff3399;
-  color: #fff;
-
-  &:hover {
-    box-shadow: inset 5px 5px 8px #e60073, inset -5px -5px 8px #ff3399;
-  }
-`;
-
-function Calculator() {
-  const [screenValue, setScreenValue] = useState("");
-
-  const handleButtonClick = (buttonText) => {
-    if (buttonText === "×") {
-      buttonText = "*";
-    }
-
-    if (buttonText === "÷") {
-      buttonText = "/";
-    }
-
-    setScreenValue(screenValue + buttonText);
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+    setFormula(Object.keys(formulas[event.target.value])[0]);
+    setInputValues({});
+    setResult(null);
   };
 
-
-
-   const handleSquareRoot = () => {
-     try {
-       setScreenValue(Math.sqrt(eval(screenValue)).toString());
-     } catch (error) {
-       setScreenValue("Error");
-     }
-   };
-
-  const handleMathFunction = (mathFunction) => {
-    setScreenValue(mathFunction(parseFloat(screenValue)));
+  const handleFormulaChange = (event) => {
+    setFormula(event.target.value);
+    setInputValues({});
+    setResult(null);
   };
 
+  const handleInputChange = (variable, value) => {
+    setInputValues((prevInputs) => ({
+      ...prevInputs,
+      [variable]: isNaN(value) ? value : parseFloat(value),
+    }));
+    setResult(null);
+  };
 
-  const evaluateExpression = () => {
-    try {
-      setScreenValue(eval(screenValue).toString());
-    } catch (error) {
-      setScreenValue("Error");
+  const calculateResult = () => {
+    const categoryFormulas = calculations[category];
+
+    if (category === "Bhaskara") {
+      const a = inputValues["a"];
+      const b = inputValues["b"];
+      const c = inputValues["c"];
+
+      const delta = b ** 2 - 4 * a * c;
+
+      if (delta < 0) {
+        setResult("A equação não possui raízes reais.");
+      } else if (delta === 0) {
+        const result = -b / (2 * a);
+        setResult(`Raiz única: ${result}`);
+      } else {
+        const root1 = (-b + Math.sqrt(delta)) / (2 * a);
+        const root2 = (-b - Math.sqrt(delta)) / (2 * a);
+        setResult(`Raízes: ${root1} e ${root2}`);
+      }
+    } else {
+      const formulaExpression = categoryFormulas[formula];
+
+      try {
+        const result = eval(formulaExpression);
+        setResult(`Resultado: ${result}`);
+      } catch (error) {
+        setResult(
+          "Erro ao calcular. Certifique-se de que os valores fornecidos são válidos."
+        );
+      }
     }
   };
 
-  const handleClear = () => {
-    setScreenValue("");
+  const renderInputs = () => {
+    const variables = formulas[category][formula];
+    return variables.map((variable) => (
+      <FormulaRow key={variable}>
+        <FormulaLabel>{variable}:</FormulaLabel>
+        <FormulaInput
+          type="text"
+          placeholder={`Insira o valor de ${variable}`}
+          value={inputValues[variable] || ""}
+          onChange={(e) => handleInputChange(variable, e.target.value)}
+        />
+      </FormulaRow>
+    ));
   };
 
-  const handleBackspace = () => {
-    setScreenValue(screenValue.slice(0, -1));
+  const renderFormula = () => {
+    const formulaExpression = formulasExpressions[category][formula];
+
+    return (
+      <div>
+        Fórmula: {formulaExpression}
+        <br />
+        {result}
+      </div>
+    );
   };
 
   return (
-    <Container>
-      <div className="display">
-        <Display type="text" value={screenValue} />
-      </div>
+    <FormulaContainer>
+      <FormulaDropdown value={category} onChange={handleCategoryChange}>
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </FormulaDropdown>
 
-      <div className="btns">
-        <Row>
-          <CEButton onClick={handleBackspace}>CE</CEButton>
-          <Button onClick={() => handleButtonClick("x!")}>x!</Button>
-          <Button className="btn" onClick={() => handleButtonClick("(")}>
-            (
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick(")")}>
-            )
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("%")}>
-            %
-          </Button>
-          <ACButton onClick={handleClear}>AC</ACButton>
-        </Row>
+      <FormulaSection>
+        <h2>Fórmulas {category}</h2>
+        <FormulaRow>
+          <FormulaDropdown value={formula} onChange={handleFormulaChange}>
+            {Object.keys(formulas[category]).map((form) => (
+              <option key={form} value={form}>
+                {form}
+              </option>
+            ))}
+          </FormulaDropdown>
+        </FormulaRow>
 
-        <Row>
-          <Button onClick={() => handleMathFunction(Math.sin)}>sin</Button>
-          <Button onClick={() => handleMathFunction(Math.PI)}>π</Button>
-          <Button className="btn" onClick={() => handleButtonClick("7")}>
-            7
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("8")}>
-            8
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("9")}>
-            9
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("/")}>
-            ÷
-          </Button>
-        </Row>
+        {renderInputs()}
 
-        <Row>
-          <Button onClick={() => handleMathFunction(Math.cos)}>cos</Button>
+        <FormulaRow>
+          <FormulaButton onClick={calculateResult}>Calcular</FormulaButton>
+        </FormulaRow>
 
-          <Button onClick={() => handleMathFunction(Math.log)}>log</Button>
-          <Button className="btn" onClick={() => handleButtonClick("4")}>
-            4
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("5")}>
-            5
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("6")}>
-            6
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("*")}>
-            ×
-          </Button>
-        </Row>
-
-        <Row>
-          <Button onClick={() => handleMathFunction(Math.tan)}>tan</Button>
-          <Button onClick={handleSquareRoot}>√</Button>
-          <Button className="btn" onClick={() => handleButtonClick("1")}>
-            1
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("2")}>
-            2
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("3")}>
-            3
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("-")}>
-            -
-          </Button>
-        </Row>
-
-        <Row>
-          <Button onClick={() => handleMathFunction(Math.E)}>e</Button>
-          <Button onClick={() => handleMathFunction(Math.pow)}>
-            x
-            <span
-              style={{ position: "relative", bottom: ".4em", right: ".1em" }}
-            >
-              y
-            </span>
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick("0")}>
-            0
-          </Button>
-          <Button className="btn" onClick={() => handleButtonClick(".")}>
-            .
-          </Button>
-          <EvalButton onClick={evaluateExpression}>=</EvalButton>
-          <Button className="btn" onClick={() => handleButtonClick("+")}>
-            +
-          </Button>
-        </Row>
-      </div>
-    </Container>
+        {renderFormula()}
+      </FormulaSection>
+    </FormulaContainer>
   );
-}
+};
 
-export default Calculator;
+export default FormulaCalculator;
