@@ -14,14 +14,17 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   /* Adicione estilos específicos para telas menores (móveis) */
-  @media only screen and (max-width: 600px) {
+  @media (max-width: 720px) {
     /* Exemplo: Altere o tamanho da fonte ou a largura do conteúdo */
-    body {
-      font-size: 14px;
-      width: 100%;
-      overflow-x: hidden;
+    html {
+       font-size: 87.5%; // vai gerar 14px;
     }
 
+@media (max-width: 1080px){
+  html{
+   font-size: 93.75%; // vai gerar 15px;
+  }
+ } 
     /* Adicione mais estilos conforme necessário para telas menores */
   }
 `;
